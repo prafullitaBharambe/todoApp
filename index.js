@@ -8,15 +8,21 @@ const app = express()
 const userRoute = require('./app/api/routes/users')
 const todoRoute = require('./app/api/routes/todo');
 
+const port = process.env.PORT;
+
 const mongoose = require('mongoose')
+
+require('dotenv').config();
 //for verifying json web token
 const jwt = require('jsonwebtoken')
 // setting secret key 
-app.set('secretKey','hdjsakfhdjsk');
+//app.set('secretKey','hdjsakfhdjsk');
+
+const secretKey = process.env.SECRET_KEY;
 
 // function for validation of user credentials
 const userValidation = (req, res,next) => {
-    jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), 
+    jwt.verify(req.headers['x-access-token'], secretKey, 
     (err,decoded) =>{
         if(err){
             res.json({
@@ -41,8 +47,8 @@ app.get('/', (req,res) => {
         "message": "Successfully Running the Application"
     })
 })
-
-const mongoURI = "mongodb+srv://prafullitaPatil:urvee@cluster0.hcla2ac.mongodb.net/?retryWrites=true&w=majority"
+const mongoURI =process.env.MONGO_URI
+//const mongoURI = "mongodb+srv://prafullitaPatil:urvee@cluster0.hcla2ac.mongodb.net/?retryWrites=true&w=majority"
 //connecting to mongodb
 mongoose.connect(mongoURI)
 .then(() => {
@@ -53,6 +59,6 @@ mongoose.connect(mongoURI)
 })
 
 // 
-app.listen(5000,() => {
+app.listen(port,() => {
     console.log("Successfully Running on the PORT: 5000")
 })
